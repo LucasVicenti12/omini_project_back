@@ -4,11 +4,9 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
 @Serializable
-data class ChatMessage (
-    var uuid: String?,
+data class ChatMessage(
     var message: String? = "",
     var dateTimeMessage: String? = "",
-    var userUUID: String? = null
-){
-    constructor() : this(uuid = null)
-}
+    var sendUserUUID: String? = null,
+    var receiptUserUUID: String? = null
+)

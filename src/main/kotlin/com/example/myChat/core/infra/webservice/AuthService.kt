@@ -36,13 +36,15 @@ class AuthService(
 
         val token = tokenService.generateToken(user.getUserData())
 
+        val userUUID = user.uuid
+
         return ResponseEntity
             .ok()
             .header(
                 HttpHeaders.SET_COOKIE,
                 tokenService.generateTokenCookie(token).toString()
             )
-            .body(LoginResponse(token = token))
+            .body(LoginResponse(token = token, userUUID = userUUID))
     }
 
     @PostMapping("/register")
