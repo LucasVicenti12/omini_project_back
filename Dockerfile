@@ -1,7 +1,9 @@
-FROM eclipse-temurin:17-jdk-alpine
+FROM openjdk:17-jdk-alpine
 
-VOLUME /tmp
-ARG JAR_FILE
-COPY ${JAR_FILE} app.jar
+WORKDIR /app
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+COPY build/libs/myChat-0.0.1-SNAPSHOT-plain.jar app.jar
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "app.jar"]
