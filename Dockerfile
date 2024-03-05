@@ -2,7 +2,9 @@ FROM openjdk:17-jdk-alpine
 
 WORKDIR /app
 
-COPY build/libs/myChat-0.0.1-SNAPSHOT-plain.jar app.jar
+docker build -t nome-da-sua-imagem:tag .
+
+COPY deploy/build/my_application.jar app.jar
 
 EXPOSE 8080
 
