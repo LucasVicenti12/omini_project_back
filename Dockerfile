@@ -2,9 +2,7 @@ FROM openjdk:17-jdk-alpine
 
 WORKDIR /app
 
-docker build -t nome-da-sua-imagem:tag .
-
-COPY deploy/build/my_application.jar app.jar
+COPY src/main/kotlin/com/example/deploy/build/my_application.jar app.jar
 
 EXPOSE 8080
 
