@@ -3,21 +3,26 @@ package com.example.myChat.core.domain.entities
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.util.Base64
 import java.util.UUID
 
 data class Users(
-    val uuid: UUID?,
-    val login: String? = "",
-    val passwordUser: String? = null,
-    val userType: UserTypes? = UserTypes.USER
+        val uuid: UUID?,
+        val login: String? = "",
+        val passwordUser: String? = null,
+        val userType: UserTypes? = UserTypes.USER,
+        val email: String? = "",
+        val avatar: String? = null,
+        val altAvatar: String? = "",
+        val userStatus: Int? = 0
 ) : UserDetails {
 
     constructor() : this(uuid = null)
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> = if (this.userType === UserTypes.ADMIN) {
         mutableListOf(
-            SimpleGrantedAuthority("ROLE_ADMIN"),
-            SimpleGrantedAuthority("ROLE_USER")
+                SimpleGrantedAuthority("ROLE_ADMIN"),
+                SimpleGrantedAuthority("ROLE_USER")
         )
     } else {
         mutableListOf(SimpleGrantedAuthority("ROLE_USER"))
