@@ -19,8 +19,8 @@ import java.util.*
 @RestController
 @RequestMapping("auth")
 class AuthService(
-    private val authenticationManager: AuthenticationManager,
-    private val userRepository: UserRepository
+        private val authenticationManager: AuthenticationManager,
+        private val userRepository: UserRepository
 ) {
     @Autowired
     lateinit var tokenService: TokenService
@@ -28,8 +28,8 @@ class AuthService(
     @PostMapping("/login")
     fun login(@RequestBody login: Login): ResponseEntity<LoginResponse> {
         val usernamePassword = UsernamePasswordAuthenticationToken(
-            login.login,
-            login.password
+                login.login,
+                login.password
         )
         val auth = authenticationManager.authenticate(usernamePassword)
         val user = auth.principal as SystemUser
@@ -39,12 +39,12 @@ class AuthService(
         val userUUID = user.uuid
 
         return ResponseEntity
-            .ok()
-            .header(
-                HttpHeaders.SET_COOKIE,
-                tokenService.generateTokenCookie(token).toString()
-            )
-            .body(LoginResponse(token = token, userUUID = userUUID))
+                .ok()
+                .header(
+                        HttpHeaders.SET_COOKIE,
+                        tokenService.generateTokenCookie(token).toString()
+                )
+                .body(LoginResponse(token = token, userUUID = userUUID))
     }
 
     @PostMapping("/register")
@@ -55,10 +55,16 @@ class AuthService(
         val encryptedPassword = BCryptPasswordEncoder().encode(register.password)
 
         val newUser = Users(
-            uuid = UUID.randomUUID(),
-            login = register.login,
-            passwordUser = encryptedPassword,
-            userType = register.userTypes
+                uuid = UUID.randomUUID(),
+                login = register.login,
+                passwordUser = encryptedPassword,
+                userType = register.userTypes,
+                email = register.email,
+                avatar = register.avatar,
+                altAvatar = register.altAvatar,
+                userStatus = register.userStatus,
+                name = register.name,
+                surname = register.surname
         )
 
         userRepository.saveUser(newUser)
@@ -68,8 +74,8 @@ class AuthService(
     @RequestMapping("/logout", method = [RequestMethod.POST, RequestMethod.GET])
     fun logout(): ResponseEntity<*>? {
         return ResponseEntity
-            .ok()
-            .header(HttpHeaders.SET_COOKIE, tokenService.getCleanCookie().toString())
-            .body("LOGGED OUT")
+                .ok()
+                .header(HttpHeaders.SET_COOKIE, tokenService.getCleanCookie().toString())
+                .body("LOGGED OUT")
     }
 }

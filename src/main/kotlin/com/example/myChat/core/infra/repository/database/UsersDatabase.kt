@@ -8,7 +8,9 @@ object UsersDatabase : Table("users") {
     var password = text("password")
     var userType = text("user_type")
     var email = varchar("email", 90).nullable()
-    var avatar = binary("avatar_image").nullable()
+    var avatar = blob("avatar_image").nullable()
     var altAvatar = char("alt_avatar", 2)
     var userStatus = integer("user_status")
+    var name = varchar("name", 20)
+    var surname = varchar("surname", 50)
 }

@@ -14,7 +14,9 @@ data class Users(
         val email: String? = "",
         val avatar: String? = null,
         val altAvatar: String? = "",
-        val userStatus: Int? = 0
+        val userStatus: Int? = 0,
+        val name: String? = null,
+        val surname: String? = null
 ) : UserDetails {
 
     constructor() : this(uuid = null)
