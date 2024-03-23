@@ -1,5 +1,6 @@
 package com.example.myChat.core.infra.repository.implementation
 
+import com.example.myChat.core.domain.entities.ChangeAvatar
 import com.example.myChat.core.domain.entities.UserTypes
 import com.example.myChat.core.domain.entities.Users
 import com.example.myChat.core.domain.repository.UserRepository
@@ -33,7 +34,7 @@ class UserRepositoryImplementation : UserRepository {
             it[userType] = users.userType.toString()
             it[email] = users.email!!
             if (users.avatar != null) {
-                it[avatar] = users.avatar.toByteArray() as ExposedBlob
+                it[avatar] = ExposedBlob(users.avatar.toByteArray())
             }
             it[altAvatar] = getAbreviationName(users.name!!, users.surname!!)
             it[userStatus] = 0
@@ -89,7 +90,17 @@ class UserRepositoryImplementation : UserRepository {
         }.firstOrNull()
     }
 
-    private fun binaryToString(a: ExposedBlob?): String? = a?.toString()
+    override fun changeAvatar(changeAvatar: ChangeAvatar): ChangeAvatar? = transaction {
+        UsersDatabase.update(
+                { Op.build { UsersDatabase.uuid eq changeAvatar.userUUID } }
+        ) {
+            it[avatar] = ExposedBlob(changeAvatar.newAvatar.toByteArray())
+        }
+        changeAvatar
+    }
+
+
+    private fun binaryToString(a: ExposedBlob?): String? = a?.let { String(it.bytes) }
     private fun getAbreviationName(name: String, surname: String): String =
             name.uppercase().substring(0, 1) +
                     surname.uppercase().substring(0, 1)
