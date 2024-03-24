@@ -8,7 +8,9 @@ import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -37,9 +39,12 @@ class ServerConfig {
             it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         }
         .authorizeHttpRequests {
-            it.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-            it.requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-            it.anyRequest().authenticated()
+            it
+                .requestMatchers("/").permitAll()
+                .requestMatchers("/web/**").permitAll()
+                .requestMatchers("/auth/login").permitAll()
+                .requestMatchers("/auth/register").permitAll()
+                .anyRequest().authenticated()
         }
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter::class.java)
         .build()
@@ -63,5 +68,14 @@ class ServerConfig {
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
+    }
+
+    @Bean
+    fun webSecurityCustomizer(): WebSecurityCustomizer? {
+        return WebSecurityCustomizer { web: WebSecurity ->
+            web.ignoring().requestMatchers(
+                "/assets/**", "/favicon.ico", "/manifest.json", "/index.html"
+            )
+        }
     }
 }
