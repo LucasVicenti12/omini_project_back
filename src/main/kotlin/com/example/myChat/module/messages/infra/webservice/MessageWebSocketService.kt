@@ -18,7 +18,7 @@ class MessageWebSocketService(
 
     @MessageMapping("/chat_add_message")
     fun addMessage(@Payload message: Message) {
-        messageRepository.saveMessage(message)
-        simpMessagingTemplate.convertAndSend("/topic/${message.chatSessionUUID}", message)
+        val newMessage = messageRepository.saveMessage(message)
+        simpMessagingTemplate.convertAndSend("/topic/${message.chatSessionUUID}", newMessage)
     }
 }

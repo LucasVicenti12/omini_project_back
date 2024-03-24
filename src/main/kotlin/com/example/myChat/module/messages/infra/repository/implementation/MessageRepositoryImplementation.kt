@@ -22,7 +22,7 @@ class MessageRepositoryImplementation : MessageRepository {
                     chatSessionUUID = it[MessageDatabase.chatSessionUUID],
                     content = it[MessageDatabase.content],
                     sendMessageDateTime = it[MessageDatabase.sendMessageDateTime],
-                    attachMessages = listOf(),
+                    attachMessage = getMessageByUUID(it[MessageDatabase.attachedMessageUUID]),
                     sendUserUUID = it[MessageDatabase.sendUserUUID]
                 )
             }
@@ -30,13 +30,41 @@ class MessageRepositoryImplementation : MessageRepository {
 
     override fun saveMessage(message: Message): Message = transaction {
         message.uuid = UUID.randomUUID()
-        MessageDatabase.insert {
+        return@transaction MessageDatabase.insert {
             it[uuid] = message.uuid!!
             it[chatSessionUUID] = message.chatSessionUUID!!
             it[content] = message.content!!
             it[sendMessageDateTime] = message.sendMessageDateTime!!
             it[sendUserUUID] = message.sendUserUUID!!
+            if (message.attachMessage != null) {
+                it[attachedMessageUUID] = message.attachMessage!!.uuid!!
+            }
+        }.resultedValues?.map {
+            Message(
+                uuid = it[MessageDatabase.uuid],
+                chatSessionUUID = it[MessageDatabase.chatSessionUUID],
+                content = it[MessageDatabase.content],
+                sendMessageDateTime = it[MessageDatabase.sendMessageDateTime],
+                attachMessage = getMessageByUUID(it[MessageDatabase.attachedMessageUUID]),
+                sendUserUUID = it[MessageDatabase.sendUserUUID]
+            )
+        }?.firstOrNull()!!
+    }
+
+    private fun getMessageByUUID(messageUUID: UUID?): Message? = if (messageUUID == null) {
+        null
+    } else {
+        transaction {
+            MessageDatabase.select(Op.build { MessageDatabase.uuid eq messageUUID }).map {
+                Message(
+                    uuid = it[MessageDatabase.uuid],
+                    chatSessionUUID = it[MessageDatabase.chatSessionUUID],
+                    content = it[MessageDatabase.content],
+                    sendMessageDateTime = it[MessageDatabase.sendMessageDateTime],
+                    attachMessage = null,
+                    sendUserUUID = it[MessageDatabase.sendUserUUID]
+                )
+            }.firstOrNull()
         }
-        message
     }
 }

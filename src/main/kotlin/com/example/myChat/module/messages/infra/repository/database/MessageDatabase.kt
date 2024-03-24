@@ -9,4 +9,5 @@ object MessageDatabase : Table("messages") {
     var content = text("content").nullable()
     var sendMessageDateTime = datetime("send_message_date_time")
     var sendUserUUID = uuid("send_user_uuid")
+    var attachedMessageUUID = uuid("attached_message_uuid").nullable()
 }

@@ -8,7 +8,7 @@ data class Message(
     var chatSessionUUID: UUID? = null,
     var content: String? = "",
     var sendMessageDateTime: LocalDateTime? = LocalDateTime.now(),
-    var attachMessages: List<Message>? = listOf(),
+    var attachMessage: Message? = null,
     var sendUserUUID: UUID? = null
 ) {
     constructor() : this(uuid = null)
