@@ -33,7 +33,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	runtimeOnly("com.mysql:mysql-connector-j")
+
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
@@ -48,6 +48,9 @@ dependencies {
 	implementation("com.auth0:java-jwt:4.4.0")
 
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+
+	implementation("org.postgresql:postgresql")
+	runtimeOnly("org.postgresql:postgresql")
 }
 
 tasks.withType<KotlinCompile> {
