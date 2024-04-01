@@ -25,7 +25,6 @@ class ChatUseCaseImplementation(
         )
 
         val chatSession = chatRepository.getChatSession(sendUserUUID, receiptUserUUID)
-        println(chatSession)
         if (chatSession != null) {
             ChatSessionResponse(
                 chatSession = ChatSession(chatSession),
