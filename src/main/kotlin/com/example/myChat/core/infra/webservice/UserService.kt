@@ -1,10 +1,12 @@
 package com.example.myChat.core.infra.webservice
 
+import com.example.myChat.core.config.service.TokenService
 import com.example.myChat.core.domain.entities.ChangeAvatar
 import com.example.myChat.core.domain.repository.UserRepository
 import com.example.myChat.core.infra.webservice.response.ChangeAvatarResponse
 import com.example.myChat.core.infra.webservice.response.UsersListResponse
 import com.example.myChat.core.infra.webservice.response.UsersResponse
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -18,6 +20,10 @@ import java.util.UUID
 class UserService(
         private val userRepository: UserRepository
 ) {
+
+    @Autowired
+    lateinit var tokenService: TokenService
+
     @GetMapping("/list")
     fun getAllUsers(): UsersListResponse = try {
         UsersListResponse(users = userRepository.listUsers(), error = null)
@@ -42,10 +48,8 @@ class UserService(
     @PostMapping("/changeAvatar")
     fun changeAvatar(@RequestBody changeAvatar: ChangeAvatar): ChangeAvatarResponse = try {
         val changeAvatarResponse = userRepository.changeAvatar(changeAvatar)
-        ChangeAvatarResponse(changeAvatar = changeAvatar)
+        ChangeAvatarResponse(changeAvatar = changeAvatarResponse)
     } catch (e: Exception) {
-        println(e.message)
-        println(changeAvatar.newAvatar)
         ChangeAvatarResponse(error = "An unexpected error has occurred")
     }
 }
