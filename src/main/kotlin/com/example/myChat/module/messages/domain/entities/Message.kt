@@ -7,7 +7,7 @@ data class Message(
     var uuid: UUID?,
     var chatSessionUUID: UUID? = null,
     var content: String? = "",
-    var sendMessageDateTime: LocalDateTime? = LocalDateTime.now(),
+    var dateTimeMessage: LocalDateTime? = LocalDateTime.now(),
     var attachMessage: Message? = null,
     var sendUserUUID: UUID? = null
 ) {

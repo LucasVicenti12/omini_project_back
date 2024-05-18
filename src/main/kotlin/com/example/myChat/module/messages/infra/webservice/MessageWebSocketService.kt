@@ -18,11 +18,11 @@ class MessageWebSocketService(
     @Autowired
     lateinit var simpMessagingTemplate: SimpMessagingTemplate
 
-    @MessageMapping("/chat_add_message")
-    fun addMessage(@Payload message: Message) {
-        if(message.content.isNullOrEmpty()) return
-
-        val newMessage = messageRepository.saveMessage(message)
-        simpMessagingTemplate.convertAndSend("/topic/${message.chatSessionUUID}", newMessage)
-    }
+//    @MessageMapping("/chat_add_message")
+//    fun addMessage(@Payload message: Message) {
+//        if(message.content.isNullOrEmpty()) return
+//
+//        val newMessage = messageRepository.saveMessage(message)
+//        simpMessagingTemplate.convertAndSend("/topic/${message.chatSessionUUID}", newMessage)
+//    }
 }

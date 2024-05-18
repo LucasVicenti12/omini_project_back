@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.*
 
 @Service
@@ -22,7 +23,7 @@ class MessageRepositoryImplementation : MessageRepository {
                     uuid = it[MessageDatabase.uuid],
                     chatSessionUUID = it[MessageDatabase.chatSessionUUID],
                     content = binaryToString(it[MessageDatabase.content]),
-                    sendMessageDateTime = it[MessageDatabase.sendMessageDateTime],
+                    dateTimeMessage = it[MessageDatabase.sendMessageDateTime],
                     attachMessage = getMessageByUUID(it[MessageDatabase.attachedMessageUUID]),
                     sendUserUUID = it[MessageDatabase.sendUserUUID]
                 )
@@ -35,7 +36,7 @@ class MessageRepositoryImplementation : MessageRepository {
             it[uuid] = message.uuid!!
             it[chatSessionUUID] = message.chatSessionUUID!!
             it[content] = ExposedBlob(message.content!!.toByteArray())
-            it[sendMessageDateTime] = message.sendMessageDateTime!!
+            it[sendMessageDateTime] = LocalDateTime.now()
             it[sendUserUUID] = message.sendUserUUID!!
             if (message.attachMessage != null) {
                 it[attachedMessageUUID] = message.attachMessage!!.uuid!!
@@ -45,7 +46,7 @@ class MessageRepositoryImplementation : MessageRepository {
                 uuid = it[MessageDatabase.uuid],
                 chatSessionUUID = it[MessageDatabase.chatSessionUUID],
                 content = binaryToString(it[MessageDatabase.content]),
-                sendMessageDateTime = it[MessageDatabase.sendMessageDateTime],
+                dateTimeMessage = it[MessageDatabase.sendMessageDateTime],
                 attachMessage = getMessageByUUID(it[MessageDatabase.attachedMessageUUID]),
                 sendUserUUID = it[MessageDatabase.sendUserUUID]
             )
@@ -61,7 +62,7 @@ class MessageRepositoryImplementation : MessageRepository {
                     uuid = it[MessageDatabase.uuid],
                     chatSessionUUID = it[MessageDatabase.chatSessionUUID],
                     content = binaryToString(it[MessageDatabase.content]),
-                    sendMessageDateTime = it[MessageDatabase.sendMessageDateTime],
+                    dateTimeMessage = it[MessageDatabase.sendMessageDateTime],
                     attachMessage = null,
                     sendUserUUID = it[MessageDatabase.sendUserUUID]
                 )
