@@ -6,4 +6,5 @@ import java.util.UUID
 interface MessageRepository {
     fun getMessages(chatSessionUUID: UUID): List<Message>
     fun saveMessage(message: Message): Message
+    fun validateUserInChatSession(userUUID: UUID, chatSessionUUID: UUID): Boolean
 }

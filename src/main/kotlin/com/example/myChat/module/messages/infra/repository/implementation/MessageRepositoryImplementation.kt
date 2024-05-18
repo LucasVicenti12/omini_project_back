@@ -1,11 +1,10 @@
 package com.example.myChat.module.messages.infra.repository.implementation
 
+import com.example.myChat.module.chat.infra.repository.database.ChatSessionDatabase
 import com.example.myChat.module.messages.domain.entities.Message
 import com.example.myChat.module.messages.domain.repository.MessageRepository
 import com.example.myChat.module.messages.infra.repository.database.MessageDatabase
-import org.jetbrains.exposed.sql.Op
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
@@ -13,7 +12,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class MessageRepositoryImplementation : MessageRepository {
+class MessageRepositoryImplementation() : MessageRepository {
     override fun getMessages(chatSessionUUID: UUID): List<Message> = transaction {
         MessageDatabase
             .select(Op.build { MessageDatabase.chatSessionUUID eq chatSessionUUID })
@@ -51,6 +50,14 @@ class MessageRepositoryImplementation : MessageRepository {
                 sendUserUUID = it[MessageDatabase.sendUserUUID]
             )
         }?.firstOrNull()!!
+    }
+
+    override fun validateUserInChatSession(userUUID: UUID, chatSessionUUID: UUID): Boolean = transaction {
+        ChatSessionDatabase.select {
+            ((ChatSessionDatabase.firstUserUUID eq userUUID) or
+                    (ChatSessionDatabase.secondUserUUID eq userUUID)) and
+                    (ChatSessionDatabase.uuid eq chatSessionUUID)
+        }.limit(1).count() > 0
     }
 
     private fun getMessageByUUID(messageUUID: UUID?): Message? = if (messageUUID == null) {
