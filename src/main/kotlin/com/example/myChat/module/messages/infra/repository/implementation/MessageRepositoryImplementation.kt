@@ -1,7 +1,9 @@
 package com.example.myChat.module.messages.infra.repository.implementation
 
+import com.example.myChat.core.infra.repository.database.UsersDatabase
 import com.example.myChat.module.chat.infra.repository.database.ChatSessionDatabase
 import com.example.myChat.module.messages.domain.entities.Message
+import com.example.myChat.module.messages.domain.entities.WhoSend
 import com.example.myChat.module.messages.domain.repository.MessageRepository
 import com.example.myChat.module.messages.infra.repository.database.MessageDatabase
 import org.jetbrains.exposed.sql.*
@@ -13,8 +15,9 @@ import java.util.*
 
 @Service
 class MessageRepositoryImplementation() : MessageRepository {
-    override fun getMessages(chatSessionUUID: UUID): List<Message> = transaction {
+    override fun getMessages(chatSessionUUID: UUID, userUUID: UUID): List<Message> = transaction {
         MessageDatabase
+            .join(UsersDatabase, JoinType.INNER, MessageDatabase.sendUserUUID, UsersDatabase.uuid)
             .select(Op.build { MessageDatabase.chatSessionUUID eq chatSessionUUID })
             .orderBy(MessageDatabase.sendMessageDateTime)
             .map {
@@ -24,7 +27,11 @@ class MessageRepositoryImplementation() : MessageRepository {
                     content = binaryToString(it[MessageDatabase.content]),
                     dateTimeMessage = it[MessageDatabase.sendMessageDateTime],
                     attachMessage = getMessageByUUID(it[MessageDatabase.attachedMessageUUID]),
-                    sendUserUUID = it[MessageDatabase.sendUserUUID]
+                    sendUserUUID = it[MessageDatabase.sendUserUUID],
+                    WhoSend(
+                        isMe = it[MessageDatabase.sendUserUUID] == userUUID,
+                        userName = it[UsersDatabase.login]
+                    )
                 )
             }
     }
@@ -47,7 +54,8 @@ class MessageRepositoryImplementation() : MessageRepository {
                 content = binaryToString(it[MessageDatabase.content]),
                 dateTimeMessage = it[MessageDatabase.sendMessageDateTime],
                 attachMessage = getMessageByUUID(it[MessageDatabase.attachedMessageUUID]),
-                sendUserUUID = it[MessageDatabase.sendUserUUID]
+                sendUserUUID = it[MessageDatabase.sendUserUUID],
+                whoSend = null
             )
         }?.firstOrNull()!!
     }

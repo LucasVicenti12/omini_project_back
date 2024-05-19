@@ -27,7 +27,10 @@ class ChatUseCaseImplementation(
         val chatSession = chatRepository.getChatSession(sendUserUUID, receiptUserUUID)
         if (chatSession != null) {
             ChatSessionResponse(
-                chatSession = ChatSession(chatSession),
+                chatSession = ChatSession(
+                    chatSession = chatSession,
+                    userChat = chatRepository.getUserChatByUUID(receiptUserUUID)
+                ),
                 situation = ChatSituationType.EXISTS,
                 error = null
             )

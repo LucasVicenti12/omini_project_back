@@ -9,7 +9,8 @@ data class Message(
     var content: String? = "",
     var dateTimeMessage: LocalDateTime? = LocalDateTime.now(),
     var attachMessage: Message? = null,
-    var sendUserUUID: UUID? = null
+    var sendUserUUID: UUID? = null,
+    var whoSend: WhoSend? = null
 ) {
     constructor() : this(uuid = null)
 }
