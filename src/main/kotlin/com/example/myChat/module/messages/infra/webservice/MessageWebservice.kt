@@ -37,6 +37,11 @@ class MessageWebservice(
             name = "chatSessionUUID",
             defaultValue = ""
         ) chatSessionUUID: UUID,
+        @RequestParam(
+            required = true,
+            name = "index",
+            defaultValue = "0"
+        ) index: Int,
         request: HttpServletRequest
     ): ResponseEntity<List<Message>?> = try {
         val cookies = request.cookies
@@ -59,7 +64,9 @@ class MessageWebservice(
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(listOf())
         }else{
             ResponseEntity.ok().body(messageRepository.getMessages(
-                chatSessionUUID = chatSessionUUID, userUUID = user.uuid!!
+                chatSessionUUID = chatSessionUUID,
+                userUUID = user.uuid!!,
+                index = index
             ))
         }
     }catch (e: Exception){

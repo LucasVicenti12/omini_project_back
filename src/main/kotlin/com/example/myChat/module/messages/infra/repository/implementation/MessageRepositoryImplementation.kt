@@ -15,7 +15,8 @@ import java.util.*
 
 @Service
 class MessageRepositoryImplementation() : MessageRepository {
-    override fun getMessages(chatSessionUUID: UUID, userUUID: UUID): List<Message> = transaction {
+    override fun getMessages(chatSessionUUID: UUID, userUUID: UUID, index: Int): List<Message> = transaction {
+        //todo -> use index to limit messages per request
         MessageDatabase
             .join(UsersDatabase, JoinType.INNER, MessageDatabase.sendUserUUID, UsersDatabase.uuid)
             .select(Op.build { MessageDatabase.chatSessionUUID eq chatSessionUUID })
