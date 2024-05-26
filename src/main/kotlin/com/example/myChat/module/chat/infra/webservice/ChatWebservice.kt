@@ -1,8 +1,10 @@
 package com.example.myChat.module.chat.infra.webservice
 
 import com.example.myChat.module.chat.domain.usecase.response.ChatSessionResponse
+import jakarta.servlet.http.HttpServletRequest
+import org.springframework.http.ResponseEntity
 import java.util.*
 
 interface ChatWebservice {
-    fun connectChat(sendUserUUID: UUID, receiptUserUUID: UUID): ChatSessionResponse
+    fun connectChat(receiptUserUUID: UUID, request: HttpServletRequest): ResponseEntity<ChatSessionResponse>?
 }

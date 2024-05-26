@@ -4,6 +4,7 @@ import com.example.myChat.module.messages.domain.entities.Message
 import java.util.UUID
 
 interface MessageRepository {
-    fun getMessages(chatSessionUUID: UUID): List<Message>
+    fun getMessages(chatSessionUUID: UUID, userUUID: UUID, index: Int): List<Message>
     fun saveMessage(message: Message): Message
+    fun validateUserInChatSession(userUUID: UUID, chatSessionUUID: UUID): Boolean
 }
